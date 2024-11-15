@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from scipy.stats import zscore
 
 
 def load_dataset_preview(df):
@@ -31,7 +32,7 @@ def load_dataset_preview(df):
     print(df.info())  # Proporciona un resumen completo del DataFrame
 
 
-def check_missiong_values(df):
+def check_missing_values(df):
     """Imprime el número de valores nulos en cada columna."""
     print("Valores nulos en cada columna:")
     print(df.isnull().sum())
@@ -156,47 +157,51 @@ def plot_distributions_and_boxplots_paginated(df, charts_per_page=5):
     """Genera histogramas y diagramas de caja para cada columna numérica en ventanas de gráficos paginadas."""
     num_cols = df.select_dtypes(include=['float64', 'int64']).columns
     num_vars = len(num_cols)
-    
+
     # Dividir las columnas en grupos de 'charts_per_page' columnas
     for start in range(0, num_vars, charts_per_page):
         end = min(start + charts_per_page, num_vars)
         current_cols = num_cols[start:end]
-        
+
         # Configuración de la cuadrícula de gráficos en una sola ventana
         rows = len(current_cols)
         fig, axes = plt.subplots(rows, 2, figsize=(12, rows * 3))
-        fig.suptitle(f"Distribuciones y Diagramas de Caja (Variables {start + 1} - {end})", fontsize=16)
-        
+        fig.suptitle(
+            f"Distribuciones y Diagramas de Caja (Variables {start + 1} - {end})", fontsize=16)
+
         # Aplanar los ejes para iterar más fácilmente si es necesario
         axes = axes.flatten() if rows > 1 else axes
-        
+
         for i, col in enumerate(current_cols):
             # Histograma
             sns.histplot(df[col], kde=True, ax=axes[2 * i])
             axes[2 * i].set_title(f'Histograma de {col}', fontsize=10)
             axes[2 * i].tick_params(axis='both', labelsize=8)
-            
+
             # Diagrama de caja (boxplot)
             sns.boxplot(x=df[col], ax=axes[2 * i + 1])
-            axes[2 * i + 1].set_title(f'Diagrama de Caja de {col}', fontsize=10)
+            axes[2 * i +
+                 1].set_title(f'Diagrama de Caja de {col}', fontsize=10)
             axes[2 * i + 1].tick_params(axis='both', labelsize=8)
-        
+
         # Ocultar ejes vacíos si hay menos de `charts_per_page` columnas en esta página
         for j in range(2 * len(current_cols), len(axes)):
             axes[j].set_visible(False)
-        
+
         # Ajustar espaciado entre gráficos y mostrar cada ventana por separado
         plt.tight_layout(rect=[0, 0, 1, 0.96], h_pad=2.5, w_pad=2)
         plt.show()
 
 
-
-def check_skewness(df):
-    """Calcula y muestra la asimetría (skewness) de las variables numéricas en el DataFrame."""
+def check_skewness_and_kurtosis(df):
+    """Calcula asimetría y curtosis de las variables numéricas."""
     skewness = df.select_dtypes(include=['float64', 'int64']).skew()
+    kurtosis = df.select_dtypes(include=['float64', 'int64']).kurtosis()
     print("Asimetría (skewness) de las variables:")
     print(skewness)
-    return skewness
+    print("\nCurtosis de las variables:")
+    print(kurtosis)
+    return skewness, kurtosis
 
 
 def transform_skewed_variables(df, skewness, threshold=0.5):
@@ -212,3 +217,141 @@ def transform_skewed_variables(df, skewness, threshold=0.5):
             transformed_df[col] = np.cbrt(df[col])
             print(f'Transformación raíz cúbica aplicada a {col}')
     return transformed_df
+
+
+def plot_boxplots_for_outliers(df):
+    """Genera diagramas de caja para detectar valores atípicos (outliers)."""
+    num_cols = df.select_dtypes(include=['float64', 'int64']).columns
+    num_vars = len(num_cols)
+
+    # Define the number of rows and columns for subplots (2x3 grid)
+    rows, cols = 2, 3
+
+    # Calculate the total number of subplots
+    total_plots = rows * cols
+
+    # Create subplots, but limit the number to the available slots
+    fig = plt.figure(figsize=(15, 10))
+
+    for i, col in enumerate(num_cols):
+        if i >= total_plots:  # Limit to available grid spaces
+            break
+
+        # Create a subplot for each column in the 2x3 grid
+        plt.subplot(rows, cols, i + 1)
+        sns.boxplot(x=df[col])
+        plt.title(f"Diagrama de Caja de {col}")
+
+    # Adjust layout and show the plot
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_scatter_for_outliers(df):
+    """Genera gráficos de dispersión para detectar posibles valores atípicos (outliers)."""
+    num_cols = df.select_dtypes(include=['float64', 'int64']).columns
+    num_vars = len(num_cols)
+
+    # Define the number of rows and columns for subplots (2x3 grid)
+    rows, cols = 2, 3
+
+    # Calculate the total number of subplots
+    total_plots = rows * cols
+
+    # Create subplots, but limit the number to the available slots
+    fig = plt.figure(figsize=(15, 10))
+
+    for i, col in enumerate(num_cols):
+        if i >= total_plots:  # Limit to available grid spaces
+            break
+
+        # Create a subplot for each column in the 2x3 grid
+        plt.subplot(rows, cols, i + 1)
+        sns.scatterplot(x=df.index, y=df[col])
+        plt.title(f"Gráfico de Dispersión de {col}")
+
+    # Adjust layout and show the plot
+    plt.tight_layout()
+    plt.show()
+
+
+def detect_outliers_zscore(df, threshold=3):
+    """Detecta outliers usando Z-scores (para distribuciones normales)."""
+    num_cols = df.select_dtypes(include=['float64', 'int64']).columns
+    z_scores = df[num_cols].apply(zscore)
+
+    # Identificar los outliers
+    outliers = (z_scores.abs() > threshold).sum(axis=0)
+
+    print(f'Outliers detectados usando Z-score (con umbral de {threshold}):')
+    print(outliers)
+    return z_scores
+
+
+def detect_outliers_iqr(df):
+    """Detecta outliers usando el Rango Intercuartílico (IQR)."""
+    num_cols = df.select_dtypes(include=['float64', 'int64']).columns
+    outliers = {}
+
+    for col in num_cols:
+        Q1 = df[col].quantile(0.25)
+        Q3 = df[col].quantile(0.75)
+        IQR = Q3 - Q1
+        lower_bound = Q1 - 1.5 * IQR
+        upper_bound = Q3 + 1.5 * IQR
+
+        # Detectar los outliers
+        outliers[col] = df[(df[col] < lower_bound) | (df[col] > upper_bound)]
+
+    print('Valores atípicos detectados usando IQR:')
+    for col, outlier_data in outliers.items():
+        print(f'\nColumna: {col}')
+        print(outlier_data)
+
+    return outliers
+
+
+def plot_bar_chart(df, column):
+    """Genera un gráfico de barras para visualizar la frecuencia de una columna categórica."""
+    plt.figure(figsize=(8, 6))
+    sns.countplot(x=column, data=df, palette='Set2', hue=column, dodge=False, legend=False)
+    plt.title(f'Frecuencia de {column}', fontsize=16)
+    plt.xlabel(column, fontsize=12)
+    plt.ylabel('Frecuencia', fontsize=12)
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_line_chart(df, x_column, y_column):
+    """Genera un gráfico de líneas para observar las tendencias a lo largo del tiempo."""
+    plt.figure(figsize=(10, 6))
+    sns.lineplot(x=x_column, y=y_column, data=df, marker='o', color='b')
+    plt.title(f'Tendencia de {y_column} a lo largo del tiempo', fontsize=16)
+    plt.xlabel(x_column, fontsize=12)
+    plt.ylabel(y_column, fontsize=12)
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_scatter_plot(df, x_column, y_column):
+    """Genera un gráfico de dispersión para explorar la relación entre dos variables continuas."""
+    plt.figure(figsize=(8, 6))
+    sns.scatterplot(x=x_column, y=y_column, data=df, color='red')
+    plt.title(f'Relación entre {x_column} y {y_column}', fontsize=16)
+    plt.xlabel(x_column, fontsize=12)
+    plt.ylabel(y_column, fontsize=12)
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_density_chart(df, column):
+    """Genera un gráfico de densidad para observar la distribución de los datos de una columna."""
+    plt.figure(figsize=(8, 6))
+    sns.kdeplot(df[column], fill=True, color='g')
+    plt.title(f'Densidad de {column}', fontsize=16)
+    plt.xlabel(column, fontsize=12)
+    plt.ylabel('Densidad', fontsize=12)
+    plt.tight_layout()
+    plt.show()
