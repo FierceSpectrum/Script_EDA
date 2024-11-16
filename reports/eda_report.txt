@@ -1,0 +1,485 @@
+Primeras filas del dataset:
+  churn  accountlength internationalplan voicemailplan  numbervmailmessages  totaldayminutes  ...  totalnightcalls  totalnightcharge  totalintlminutes  totalintlcalls  totalintlcharge  numbercustomerservicecalls
+0    No            128                no           yes                   25            265.1  ...               91             11.01              10.0               3             2.70                           1
+1    No            107                no           yes                   26            161.6  ...              103             11.45              13.7               3             3.70                           1
+2    No            137                no            no                    0            243.4  ...              104              7.32              12.2               5             3.29                           0
+3    No             84               yes            no                    0            299.4  ...               89              8.86               6.6               7             1.78                           2
+4    No             75               yes            no                    0            166.7  ...              121              8.41              10.1               3             2.73                           3
+
+[5 rows x 18 columns]
+
+Tipos de datos por columna:
+churn                          object
+accountlength                   int64
+internationalplan              object
+voicemailplan                  object
+numbervmailmessages             int64
+totaldayminutes               float64
+totaldaycalls                   int64
+totaldaycharge                float64
+totaleveminutes               float64
+totalevecalls                   int64
+totalevecharge                float64
+totalnightminutes             float64
+totalnightcalls                 int64
+totalnightcharge              float64
+totalintlminutes              float64
+totalintlcalls                  int64
+totalintlcharge               float64
+numbercustomerservicecalls      int64
+dtype: object
+
+Dimensiones del dataset:
+Filas: 5000, Columnas: 18
+
+Informacion general del dataset:
+None
+
+Valores nulos en cada columna:
+churn                         0
+accountlength                 0
+internationalplan             0
+voicemailplan                 0
+numbervmailmessages           0
+totaldayminutes               0
+totaldaycalls                 0
+totaldaycharge                0
+totaleveminutes               0
+totalevecalls                 0
+totalevecharge                0
+totalnightminutes             0
+totalnightcalls               0
+totalnightcharge              0
+totalintlminutes              0
+totalintlcalls                0
+totalintlcharge               0
+numbercustomerservicecalls    0
+
+Se eliminaron 0 filas duplicadas.
+
+Tipos de datos convertidos en las columnas categoricas.
+
+Nombres de columnas actualizados.
+
+Datos despues de la limpieza:
+  cancelled  account_length  internationalplan  voicemailplan  num_voicemail_messages  total_day_minutes  total_day_calls  total_day_charge  total_evening_minutes  total_evening_calls  total_evening_charge  total_night_minutes  total_night_calls  total_night_charge  total_intl_minutes  total_intl_calls  total_intl_charge  num_customer_service_calls
+0        No             128              False           True                      25              265.1              110             45.07                  197.4                   99                 16.78                244.7                 91               11.01                10.0                 3               2.70                           1
+1        No             107              False           True                      26              161.6              123             27.47                  195.5                  103                 16.62                254.4                103               11.45                13.7                 3               3.70                           1
+2        No             137              False          False                       0              243.4              114             41.38                  121.2                  110                 10.30                162.6                104                7.32                12.2                 5               3.29                           0
+3        No              84               True          False                       0              299.4               71             50.90                   61.9                   88                  5.26                196.9                 89                8.86                 6.6                 7               1.78                           2
+4        No              75               True          False                       0              166.7              113             28.34                  148.3                  122                 12.61                186.9                121                8.41                10.1                 3               2.73                           3
+
+Estadisticas descriptivas:
+       account_length  num_voicemail_messages  total_day_minutes  total_day_calls  total_day_charge  total_evening_minutes  total_evening_calls  total_evening_charge  total_night_minutes  total_night_calls  total_night_charge  total_intl_minutes  total_intl_calls  total_intl_charge  num_customer_service_calls
+count      5000.00000             5000.000000        5000.000000      5000.000000       5000.000000            5000.000000          5000.000000           5000.000000          5000.000000        5000.000000         5000.000000         5000.000000       5000.000000        5000.000000                 5000.000000
+mean        100.25860                7.755200         180.288900       100.029400         30.649668             200.636560           100.191000             17.054322           200.391620          99.919200            9.017732           10.261780          4.435200           2.771196                    1.570400
+std          39.69456               13.546393          53.894699        19.831197          9.162069              50.551309            19.826496              4.296843            50.527789          19.958686            2.273763            2.761396          2.456788           0.745514                    1.306363
+min           1.00000                0.000000           0.000000         0.000000          0.000000               0.000000             0.000000              0.000000             0.000000           0.000000            0.000000            0.000000          0.000000           0.000000                    0.000000
+25%          73.00000                0.000000         143.700000        87.000000         24.430000             166.375000            87.000000             14.140000           166.900000          87.000000            7.510000            8.500000          3.000000           2.300000                    1.000000
+50%         100.00000                0.000000         180.100000       100.000000         30.620000             201.000000           100.000000             17.090000           200.400000         100.000000            9.020000           10.300000          4.000000           2.780000                    1.000000
+75%         127.00000               17.000000         216.200000       113.000000         36.750000             234.100000           114.000000             19.900000           234.700000         113.000000           10.560000           12.000000          6.000000           3.240000                    2.000000
+max         243.00000               52.000000         351.500000       165.000000         59.760000             363.700000           170.000000             30.910000           395.000000         175.000000           17.770000           20.000000         20.000000           5.400000                    9.000000
+
+Asimetria (skewness) de las variables:
+account_length                0.109291
+num_voicemail_messages        1.350493
+total_day_minutes            -0.011731
+total_day_calls              -0.084891
+total_day_charge             -0.011729
+total_evening_minutes        -0.011018
+total_evening_calls          -0.020175
+total_evening_charge         -0.010990
+total_night_minutes           0.019325
+total_night_calls             0.002133
+total_night_charge            0.019287
+total_intl_minutes           -0.209966
+total_intl_calls              1.360692
+total_intl_charge            -0.210286
+num_customer_service_calls    1.042462
+
+Curtosis de las variables:
+account_length               -0.101621
+num_voicemail_messages        0.199127
+total_day_minutes            -0.021294
+total_day_calls               0.178568
+total_day_charge             -0.021166
+total_evening_minutes         0.051375
+total_evening_calls           0.117363
+total_evening_charge          0.051289
+total_night_minutes           0.082359
+total_night_calls             0.144438
+total_night_charge            0.082378
+total_intl_minutes            0.655317
+total_intl_calls              3.268184
+total_intl_charge             0.655989
+num_customer_service_calls    1.481096
+
+Transformacion logaritmica aplicada a num_voicemail_messages
+
+Transformacion logaritmica aplicada a total_intl_calls
+
+Transformacion logaritmica aplicada a num_customer_service_calls
+
+Outliers detectados usando Z-score (con umbral de 3):
+account_length                12
+num_voicemail_messages         7
+total_day_minutes             13
+total_day_calls               14
+total_day_charge              13
+total_evening_minutes         15
+total_evening_calls            9
+total_evening_charge          15
+total_night_minutes           18
+total_night_calls             15
+total_night_charge            18
+total_intl_minutes            36
+total_intl_calls              73
+total_intl_charge             36
+num_customer_service_calls    51
+
+Valores atipicos detectados usando IQR:
+
+Columna: account_length
+
+       215          209          224
+       243          217          210
+       212          232          225
+       225          224          212
+       210          217          209
+       221          209          238
+       216          222          232
+       233          217          222
+
+
+
+Columna: num_voicemail_messages
+
+        46           43           48           48           45           46           43
+        45           51           43           45           46           43           47
+        44           44           49           44           43           47           43
+        45           45           45           43           46           44           50
+        44           50           47           44           43           44           43
+        43           46           45           49           46           49           45
+        43           47           46           45           43           46           45
+        48           43           45           48           52           43           44
+        48           43           44           43
+
+
+
+Columna: total_day_minutes
+
+     332.9        337.4        326.5        350.8
+     335.5         30.9         34.0        334.3
+     346.8         12.5         25.9          0.0
+       0.0         19.5        329.8          7.9
+     328.1         27.0         17.6        326.3
+     345.3          2.6          7.8         18.9
+      29.9        338.4        326.1        325.4
+     351.5        332.1        325.5          6.6
+      34.5          7.2
+
+
+
+Columna: total_day_calls
+
+        47          158           47          163
+        36           40          158          165
+        30           42            0           45
+         0           45          160          156
+        35           42          158          157
+        45           44           44           44
+        40           47           34           39
+       156          156          157           44
+        46          160           39
+
+
+
+Columna: total_day_charge
+
+     56.59        57.36        55.51        59.64
+     57.04         5.25         5.78        56.83
+     58.96         2.13          4.4          0.0
+       0.0         3.32        56.07         1.34
+     55.78         4.59         2.99        55.47
+      58.7         0.44         1.33         3.21
+      5.08        57.53        55.44        55.32
+     59.76        56.46        55.34         1.12
+      5.87         1.22
+
+
+
+Columna: total_evening_minutes
+
+      61.9        348.5        351.6         31.2         64.3
+     350.5        337.1         42.2        347.3         58.9
+      43.9         52.9         42.5         60.8         58.6
+      56.0         48.1        336.0         60.0        350.9
+      49.2        339.9        361.8        335.7        354.2
+     363.7          0.0        341.3         22.3         58.3
+     344.0         37.8         41.7        349.4        348.9
+      47.3         53.2        344.9        352.1        345.1
+      47.3        359.3        340.3
+
+
+
+Columna: total_evening_calls
+
+       164           46          168
+        42           37           12
+       157          155           45
+        36          156           46
+        44          155           46
+        43            0          155
+       159          170           46
+        46          169          155
+       155           38           44
+
+
+
+Columna: total_evening_charge
+
+      5.26        29.62        29.89         2.65         5.47
+     29.79        28.65         3.59        29.52         5.01
+      3.73          4.5         3.61         5.17         4.98
+      4.76         4.09        28.56          5.1        29.83
+      4.18        28.89        30.75        30.11        30.91
+       0.0        29.01          1.9         4.96        29.24
+      3.21         3.54         29.7        29.66         4.02
+      4.52        29.32        29.93        29.33         4.02
+     30.54        28.93
+
+
+
+Columna: total_night_minutes
+
+      57.5        354.9        349.2        345.8
+      45.0        342.8        364.3         63.3
+      54.5         50.1         43.7        349.7
+     352.5         23.2         63.6        381.9
+     377.5        367.7         56.6         54.0
+      64.2        344.3        395.0        350.2
+      50.1         53.3        352.2        364.9
+      61.4         47.4        381.6         50.9
+      46.7        359.9         65.2         59.5
+       0.0        355.1         60.3
+
+
+
+Columna: total_night_calls
+
+        46           42           44           42          153
+       175          154          158          155          157
+       157          154          153          166           33
+       155          156           38           36          156
+       164          153           40          168          161
+       159          160          170          158          154
+        42           41          159           38           46
+       155           42           12           46          165
+        43          155            0
+
+
+
+Columna: total_night_charge
+
+      2.59        15.97        15.71        15.56
+      2.03        15.43        16.39         2.85
+      2.45         2.25         1.97        15.74
+     15.86         1.04         2.86        17.19
+     16.99        16.55         2.55         2.43
+      2.89        15.49        17.77        15.76
+      2.25          2.4        15.85        16.42
+      2.76         2.13        17.17         2.29
+       2.1         16.2         2.93         2.68
+       0.0        15.98         2.71
+
+
+
+Columna: total_intl_minutes
+
+      20.0          0.0         17.6          2.7         18.9          0.0         18.0          2.0          0.0
+      17.5         17.5         18.2          0.0          0.0          1.3          0.0          0.0          0.0
+       2.2         18.0          0.0         17.9          0.0         17.3         17.3         18.4          2.0
+      17.8          2.9          3.1         17.6         17.3          2.6          0.0          0.0         18.2
+       0.0         18.0          1.1          0.0         18.3          0.0          0.0          2.1          2.9
+      17.5          2.1          2.4          2.5          0.0          0.0         17.8         18.9          0.0
+      18.7          0.0          3.1          0.4         19.3         19.2          2.2          0.0         19.7
+       0.0          0.0         17.8         18.5          0.0          1.1          2.0         17.7         19.7
+
+
+
+Columna: total_intl_calls
+
+        19           15           11           12           13           11           12           11           13           12           11           11
+        18           11           12           13           12           12           11           15           13           15           11           11
+        14           13           11           13           13           12           11           14           15           18           12           13
+        11           14           11           12           14           15           12           11           16           11           11           11
+        11           15           11           14           11           11           12           13           11           11           16           13
+        11           13           11           15           11           12           13           18           12           12           12           11
+        13           11           13           14           20           17           13           12           19           13           12           16
+        11           16           16           11           11           12           15           16           12           12           11           11
+        11           15           11           11           12           13           11           13           18           13           11           11
+        12           17           11           12           11           11           11           11           11           16
+
+
+
+Columna: total_intl_charge
+
+       5.4          0.0         4.75         0.73          5.1          0.0         4.86         0.54          0.0
+      4.73         4.73         4.91          0.0          0.0         0.35          0.0          0.0          0.0
+      0.59         4.86          0.0         4.83          0.0         4.67         4.67         4.97         0.54
+      4.81         0.78         0.84         4.75         4.67          0.7          0.0          0.0         4.91
+       0.0         4.86          0.3          0.0         4.94          0.0          0.0         0.57         0.78
+      4.73         0.57         0.65         0.68          0.0          0.0         4.81          5.1          0.0
+      5.05          0.0         0.84         0.11         5.21         5.18         0.59          0.0         5.32
+       0.0          0.0         4.81          5.0          0.0          0.3         0.54         4.78         5.32
+
+
+
+Columna: num_customer_service_calls
+
+         4            4            4            5            5            5            4            4            4            4            4            4
+         4            4            4            4            5            5            4            5            4            4            5            4
+         4            4            4            4            5            4            4            7            4            4            4            4
+         4            5            4            4            4            4            4            5            4            7            4            9
+         5            4            4            5            4            4            5            5            4            6            4            6
+         5            5            5            6            5            4            4            5            4            4            7            4
+         6            5            4            4            4            6            4            4            5            4            4            4
+         4            4            4            5            5            6            5            4            4            4            5            4
+         4            4            4            5            5            4            4            4            4            6            4            5
+         4            6            4            4            4            4            4            4            4            4            4            6
+         4            4            4            4            8            4            4            5            4            4            4            6
+         5            5            7            4            4            5            4            4            5            4            4            5
+         7            4            4            5            7            4            4            4            4            8            6            4
+         4            5            5            5            4            4            5            4            4            4            4            4
+         4            4            4            4            4            5            6            4            5            4            4            5
+         5            4            6            4            4            4            9            6            4            5            5            4
+         6            4            4            5            4            4            4            5            5            6            4            5
+         4            4            4            4            5            4            4            4            5            4            5            6
+         4            4            5            4            4            4            5            4            4            4            4            4
+         5            7            6            5            6            7            5            5            4            6            4            4
+         4            4            5            6            7            4            4            4            5            5            5            4
+         4            4            5            6            5            5            4            4            4            4            4            4
+         4            4            5            4            4            5            5            4            4            5            4            5
+         4            4            4            5            5            4            4            6            6            4            5            5
+         4            4            5            4            5            4            5            4            4            4            4            4
+         4            4            4            4            4            6            4            4            4            4            5            4
+         4            4            5            5            4            4            5            5            5            4            4            7
+         4            4            5            5            5            6            4            4            4            4            4            4
+         4            4            4            4            4            7            7            4            6            4            4            4
+         4            4            4            4            4            4            7            5            4            4            4            5
+         4            4            6            4            4            5            4            4            6            5            5            6
+         5            6            4            4            4            4            4            5            4            4            5            4
+         6            4            6            4            5            4            4            4            6            4            4            4
+         4            4            5
+
+
+
+Datos normalizados con Min-Max Scaling.
+
+
+    ====================================================
+                    Resumen del Analisis
+    ====================================================
+
+    Resumen General del Dataset:
+    ----------------------------
+    - Tamano del Dataset: 5000 filas y 18 columnas.
+    - Tipos de Variables:
+      - float64: 15 columnas.
+      - bool: 2 columnas.
+      - object: 1 columnas.
+    - Valores Nulos: No se encontraron valores nulos.
+    - Duplicados: No se detectaron filas duplicadas.
+
+
+    Limpieza y Transformacion de Datos:
+    -----------------------------------
+    - Conversion de Tipos: Las columnas categoricas, como internationalplan y voicemailplan, 
+    fueron convertidas a valores booleanos (True y False).
+    - Renombrado de Columnas: Se renombraron varias columnas para mejorar la legibilidad, 
+    como churn a cancelled y accountlength a account_length.
+
+    Analisis Estadistico y Distribuciones:
+    --------------------------------------
+    - Estadisticas Descriptivas: Se calcularon metricas de media, desviacion estandar, 
+    valores minimo y maximo para todas las variables numericas.
+    - Asimetria y Curtosis:
+    - Variables como num_voicemail_messages, total_intl_calls, y num_customer_service_calls 
+        presentaron asimetria positiva, indicando valores sesgados a la derecha.
+    - La curtosis elevada en total_intl_calls y num_customer_service_calls sugiere 
+        presencia de valores extremos.
+    - Se aplicaron transformaciones logaritmicas a estas variables para mejorar su 
+        distribucion y reducir el sesgo.
+
+    Deteccion de Valores Atipicos:
+    ------------------------------
+    - Z-Score e IQR: Se utilizaron ambos metodos para detectar valores atipicos en las variables numericas.
+    - Variables como total_intl_calls, num_customer_service_calls y total_night_minutes 
+        presentaron un numero elevado de valores atipicos.
+    - Estos valores extremos podrian influir en modelos predictivos y deben considerarse 
+        en el analisis.
+
+    Visualizacion de Relacion entre Variables:
+    ------------------------------------------
+    - Matriz de Correlacion: Se observan correlaciones altas entre minutos y cargos en distintos periodos.
+    - No se observan correlaciones fuertes entre account_length y otras variables, sugiriendo 
+    independencia del tiempo en servicio con respecto al comportamiento de consumo.
+
+    Normalizacion de los Datos:
+    ---------------------------
+    - Escalado Min-Max: Las variables numericas fueron normalizadas al rango [0, 1], 
+    preparandolas para modelos de aprendizaje automatico.
+
+    
+    ====================================================
+                    Conclusiones
+    ====================================================
+
+    - Calidad del Dataset: El dataset es de buena calidad, sin valores nulos ni duplicados.
+    - Patrones de Consumo:
+    - Los clientes muestran distintos patrones de consumo en minutos y cargos.
+    - Los clientes con un plan internacional o con muchas interacciones con servicio al 
+        cliente pueden representar perfiles distintos de usuario.
+    - Valores Atipicos: La deteccion de valores atipicos revela comportamientos extremos en 
+    ciertas variables que pueden afectar modelos predictivos.
+    - Preparacion para Modelado:
+    - Se han realizado transformaciones para reducir el sesgo y se ha aplicado normalizacion, 
+        dejando el dataset listo para el modelado.
+    - Las variables estan ahora en condiciones optimas para algoritmos como regresion 
+        logistica o arboles de decision.
+    
+    
+    ====================================================
+                    Preparacion para Modelado
+    ====================================================
+
+    Analisis de Requerimientos:
+    -----------------------------------
+    - Comprender los requerimientos del sistema y del negocio es clave antes de hacer cualquier modelado. Esto incluye reuniones con stakeholders y la revision de documentacion existente.
+
+    Seleccion de Herramientas de Modelado:
+    ---------------------------------------
+    - Elegir las herramientas adecuadas es crucial para representar de forma precisa los procesos. Puedes usar diagramas como diagramas de flujo, UML, o herramientas de modelado especifico para el proyecto.
+
+    Identificacion de Actores y Procesos:
+    -------------------------------------
+    - Identificar que o quien interactuara con el sistema es un paso necesario antes de comenzar el modelado. Los actores pueden ser personas, sistemas u otros procesos, mientras que los procesos reflejan las actividades del sistema.
+
+    Definir el Alcance y los Objetivos del Modelado:
+    -----------------------------------------------
+    - Asegurate de que el alcance de tu modelado este claro. Decide que parte del sistema o proceso estas modelando y los objetivos que deseas lograr con el modelo.
+
+    Creacion del Modelo Inicial:
+    ----------------------------
+    - Utilizando la informacion recopilada, crea un modelo preliminar para representar los procesos y actores identificados. Este es un bosquejo inicial que puede evolucionar segun nuevas perspectivas o ajustes.
+
+    Validacion y Revision del Modelo:
+    -----------------------------------
+    - El modelo debe ser revisado por los stakeholders y otros miembros del equipo para asegurarse de que representa correctamente el sistema y cumple con los requisitos. Aqui puedes identificar areas de mejora.
+
+    Refinamiento y Documentacion Final:
+    ------------------------------------
+    - Despues de las revisiones, realiza los ajustes necesarios y documenta el modelo final. La documentacion debe incluir descripciones claras de los procesos, actores y cualquier detalle que pueda ser util para el desarrollo del proyecto.
+    
+    ====================================================
+    

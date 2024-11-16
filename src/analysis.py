@@ -1,5 +1,9 @@
 from data_connection import load_data
 import eda_functions as eda
+from report_functions import write_to_report, reset_report, write_summary_report, generate_dataset_summary
+
+# Reinicia el archivo de reporte al inicio del análisis
+reset_report()
 
 # URL directa del archivo CSV en GitHub
 url = "https://raw.githubusercontent.com/FierceSpectrum/Script_EDA/refs/heads/main/data/datos.csv"
@@ -18,18 +22,19 @@ if data is not None:
     eda.conver_data_type(data)
     eda.rename_columns(data)
 
-    print("\nDatos después de la limpieza:")
-    print(data.head())
+    write_to_report("\nDatos despues de la limpieza:")
+    write_to_report(data.head())
 
     # Paso 3: Análisis Univariado
     eda.describe_data(data)             # Estadísticas descriptivas
     eda.plot_histograms(data)           # Histogramas de distribuciones
     eda.plot_boxplots(data)             # Diagramas de caja (boxplots)
-    eda.plot_distributions_and_boxplots_paginated(data)  # Distribuciones y boxplots paginados
+    eda.plot_distributions_and_boxplots_paginated(
+        data)  # Distribuciones y boxplots paginados
 
     # Paso 4: Análisis Bivariado
     eda.plot_correlation_matrix(data)  # Matriz de correlación
-    # eda.plot_scatter_matrix(data)      # Matriz de diagramas de dispersión
+    eda.plot_scatter_matrix(data)      # Matriz de diagramas de dispersión
 
     # Boxplots agrupados por una categoría
     numeric_cols = data.select_dtypes(include=['float64', 'int64']).columns
@@ -67,11 +72,13 @@ if data is not None:
     eda.plot_density_chart(data, 'total_intl_charge')
     eda.plot_density_chart(data, 'total_night_minutes')
 
+    # Paso 8: Normalización de Datos
+    data_normalized = eda.normalize_data_min_max(data)
+
     # Paso 9: Resúmenes y Conclusiones (el paso 8 de normalización lo puedes realizar después del EDA si decides aplicarlo)
-    print("\nResumen de hallazgos:")
-    print("Se encontró que las variables presentan asimetrías y curtosis que se han tratado mediante transformaciones.")
-    print("Las correlaciones entre las variables claves se han visualizado y analizado.")
-    print("Se ha preparado el dataset para el modelado eliminando valores nulos, estandarizando nombres de columnas, y transformando variables sesgadas.")
+    resumen_data = generate_dataset_summary(data)
+    resumen = write_summary_report(resumen_data)
+    write_to_report(resumen)
 
 else:
-    print("No se pudieron cargar los datos.")
+    write_to_report("No se pudieron cargar los datos.")
