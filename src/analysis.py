@@ -1,9 +1,9 @@
 from data_connection import load_data
 import eda_functions as eda
-from report_functions import write_to_report, reset_report, write_summary_report, generate_dataset_summary
+import report_functions as rpt
 
 # Reinicia el archivo de reporte al inicio del análisis
-reset_report()
+rpt.reset_report()
 
 # URL directa del archivo CSV en GitHub
 url = "https://raw.githubusercontent.com/FierceSpectrum/Script_EDA/refs/heads/main/data/datos.csv"
@@ -22,8 +22,8 @@ if data is not None:
     eda.conver_data_type(data)
     eda.rename_columns(data)
 
-    write_to_report("\nDatos despues de la limpieza:")
-    write_to_report(data.head())
+    rpt.write_to_report("\nDatos despues de la limpieza:")
+    rpt.write_to_report(data.head())
 
     # Paso 3: Análisis Univariado
     eda.describe_data(data)             # Estadísticas descriptivas
@@ -76,9 +76,11 @@ if data is not None:
     data_normalized = eda.normalize_data_min_max(data)
 
     # Paso 9: Resúmenes y Conclusiones (el paso 8 de normalización lo puedes realizar después del EDA si decides aplicarlo)
-    resumen_data = generate_dataset_summary(data)
-    resumen = write_summary_report(resumen_data)
-    write_to_report(resumen)
+    resumen_data = rpt.generate_dataset_summary(data)
+    resumen = rpt.write_summary_report(resumen_data)
+    rpt.write_to_report(resumen)
+
+    rpt.save_dataframe_to_csv(data_normalized)
 
 else:
-    write_to_report("No se pudieron cargar los datos.")
+    rpt.write_to_report("No se pudieron cargar los datos.")

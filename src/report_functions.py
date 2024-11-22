@@ -172,3 +172,27 @@ def write_summary_report(summary):
     """
 
     return report_content
+
+
+def save_dataframe_to_csv(dataframe, file_path=None):
+    """
+    Guarda un DataFrame en un archivo CSV en una ruta específica.
+    Si no se proporciona una ruta, guarda el archivo en un directorio predeterminado.
+
+    Parámetros:
+        dataframe (pd.DataFrame): El DataFrame a guardar.
+        file_path (str, opcional): La ruta del archivo CSV. Si no se proporciona,
+                                   se usa una ruta predeterminada.
+    """
+    # Ruta predeterminada
+    if file_path is None:
+        default_dir = "data"
+        os.makedirs(default_dir, exist_ok=True)
+        file_path = os.path.join(default_dir, "data_cleaned.csv")
+
+    # Guardar el DataFrame en el archivo CSV
+    try:
+        dataframe.to_csv(file_path, index=False)
+        print(f"Archivo guardado exitosamente en: {file_path}")
+    except Exception as e:
+        print(f"Error al guardar el archivo: {e}")
