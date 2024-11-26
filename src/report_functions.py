@@ -34,7 +34,7 @@ def write_to_report(content, report_path="reports/eda_report.txt"):
     # Escribir contenido en el archivo
     with open(report_path, "a") as file:
         file.write(content + "\n")
-    print("Contenido escrito en el archivo de reporte.")
+    # print("Contenido escrito en el archivo de reporte.")
 
 
 def generate_dataset_summary(df):
@@ -182,7 +182,7 @@ def save_dataframe_to_csv(dataframe, file_path=None):
     Parámetros:
         dataframe (pd.DataFrame): El DataFrame a guardar.
         file_path (str, opcional): La ruta del archivo CSV. Si no se proporciona,
-                                   se usa una ruta predeterminada.
+                                    se usa una ruta predeterminada.
     """
     # Ruta predeterminada
     if file_path is None:
@@ -196,3 +196,4 @@ def save_dataframe_to_csv(dataframe, file_path=None):
         print(f"Archivo guardado exitosamente en: {file_path}")
     except Exception as e:
         print(f"Error al guardar el archivo: {e}")
+

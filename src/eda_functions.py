@@ -1,3 +1,4 @@
+import math
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -71,8 +72,11 @@ def conver_data_type(df):
     # Convertir 'yes'/'no' en 'internationalplan' y 'voicemailplan' a booleanos
     df['internationalplan'] = df['internationalplan'].map(
         {'yes': True, 'no': False})
+    df['churn'] = df['churn'].map(
+        {'Yes': True, 'No': False})
     df['voicemailplan'] = df['voicemailplan'].map({'yes': True, 'no': False})
-    write_to_report("\nTipos de datos convertidos en las columnas categoricas.")
+    write_to_report(
+        "\nTipos de datos convertidos en las columnas categoricas.")
 
 
 def rename_columns(df):
@@ -81,6 +85,8 @@ def rename_columns(df):
         'churn': 'cancelled',
         'accountlength': 'account_length',
         'numbervmailmessages': 'num_voicemail_messages',
+        'internationalplan': 'international_plan',
+        'voicemailplan': 'voicemail_plan',
         'totaldayminutes': 'total_day_minutes',
         'totaldaycalls': 'total_day_calls',
         'totaldaycharge': 'total_day_charge',
@@ -225,73 +231,91 @@ def check_skewness_and_kurtosis(df):
 
 def transform_skewed_variables(df, skewness, threshold=0.5):
     """Transforma las variables sesgadas en el DataFrame usando log o raiz cuadrada."""
-    transformed_df = df.copy()
+    # transformed_df = df.copy()
     for col, skew in skewness.items():
         if skew > threshold:  # Sesgo positivo
             # log(1 + x) para evitar log(0)
-            transformed_df[col] = np.log1p(df[col])
+            df[col] = np.log1p(df[col])
             write_to_report(f'\nTransformacion logaritmica aplicada a {col}')
         elif skew < -threshold:  # Sesgo negativo
             # Raiz cubica para sesgo negativo
-            transformed_df[col] = np.cbrt(df[col])
+            df[col] = np.cbrt(df[col])
             write_to_report(f'\nTransformacion raiz cubica aplicada a {col}')
-    return transformed_df
+    return df
 
 
-def plot_boxplots_for_outliers(df):
-    """Genera diagramas de caja para detectar valores atipicos (outliers)."""
+def plot_boxplots_paginated(df, charts_per_page=6):
+    """Genera diagramas de caja para cada columna numérica en ventanas paginadas."""
     num_cols = df.select_dtypes(include=['float64', 'int64']).columns
     num_vars = len(num_cols)
 
-    # Define the number of rows and columns for subplots (2x3 grid)
-    rows, cols = 2, 3
+    # Itera sobre las columnas en bloques de tamaño `charts_per_page`
+    for start in range(0, num_vars, charts_per_page):
+        end = min(start + charts_per_page, num_vars)
+        current_cols = num_cols[start:end]
 
-    # Calculate the total number of subplots
-    total_plots = rows * cols
+        # Calcula el número de filas necesario para los gráficos en esta página
+        rows = math.ceil(len(current_cols) / 3)
+        cols = min(len(current_cols), 3)  # Máximo 3 columnas por fila
 
-    # Create subplots, but limit the number to the available slots
-    fig = plt.figure(figsize=(15, 10))
+        # Configura la figura y los ejes
+        fig, axes = plt.subplots(rows, cols, figsize=(cols * 5, rows * 4))
+        fig.suptitle(
+            f"Diagramas de Caja (Variables {start + 1} - {end})", fontsize=16)
 
-    for i, col in enumerate(num_cols):
-        if i >= total_plots:  # Limit to available grid spaces
-            break
+        # Asegura que `axes` sea iterable
+        axes = axes.flatten() if isinstance(axes, np.ndarray) else [axes]
 
-        # Create a subplot for each column in the 2x3 grid
-        plt.subplot(rows, cols, i + 1)
-        sns.boxplot(x=df[col])
-        plt.title(f"Diagrama de Caja de {col}")
+        for i, col in enumerate(current_cols):
+            sns.boxplot(x=df[col], ax=axes[i])
+            axes[i].set_title(f'Diagrama de Caja de {col}')
+            axes[i].tick_params(axis='both', labelsize=8)
 
-    # Adjust layout and show the plot
-    plt.tight_layout()
-    plt.show()
+        # Oculta ejes vacíos si no se usan
+        for j in range(len(current_cols), len(axes)):
+            axes[j].set_visible(False)
+
+        # Ajusta el diseño y muestra la página
+        plt.tight_layout(rect=[0, 0, 1, 0.96])
+        plt.show()
 
 
-def plot_scatter_for_outliers(df):
-    """Genera graficos de dispersion para detectar posibles valores atipicos (outliers)."""
+def plot_scatter_paginated(df, charts_per_page=6):
+    """Genera gráficos de dispersión para detectar posibles valores atípicos (outliers) en ventanas paginadas."""
     num_cols = df.select_dtypes(include=['float64', 'int64']).columns
     num_vars = len(num_cols)
 
-    # Define the number of rows and columns for subplots (2x3 grid)
-    rows, cols = 2, 3
+    # Itera sobre las columnas en bloques de tamaño `charts_per_page`
+    for start in range(0, num_vars, charts_per_page):
+        end = min(start + charts_per_page, num_vars)
+        current_cols = num_cols[start:end]
 
-    # Calculate the total number of subplots
-    total_plots = rows * cols
+        # Calcula las filas necesarias para la cuadrícula de gráficos
+        rows = math.ceil(len(current_cols) / 3)
+        cols = min(len(current_cols), 3)  # Máximo de 3 columnas por fila
 
-    # Create subplots, but limit the number to the available slots
-    fig = plt.figure(figsize=(15, 10))
+        # Configura la figura y los ejes
+        fig, axes = plt.subplots(rows, cols, figsize=(cols * 5, rows * 4))
+        fig.suptitle(
+            f"Gráficos de Dispersión (Variables {start + 1} - {end})", fontsize=16)
 
-    for i, col in enumerate(num_cols):
-        if i >= total_plots:  # Limit to available grid spaces
-            break
+        # Asegura que `axes` sea iterable
+        axes = axes.flatten() if isinstance(axes, np.ndarray) else [axes]
 
-        # Create a subplot for each column in the 2x3 grid
-        plt.subplot(rows, cols, i + 1)
-        sns.scatterplot(x=df.index, y=df[col])
-        plt.title(f"Grafico de Dispersion de {col}")
+        for i, col in enumerate(current_cols):
+            sns.scatterplot(x=df.index, y=df[col], ax=axes[i])
+            axes[i].set_title(f'Gráfico de Dispersión de {col}')
+            axes[i].set_xlabel('Índice')
+            axes[i].set_ylabel(col)
+            axes[i].tick_params(axis='both', labelsize=8)
 
-    # Adjust layout and show the plot
-    plt.tight_layout()
-    plt.show()
+        # Oculta ejes vacíos si no se usan
+        for j in range(len(current_cols), len(axes)):
+            axes[j].set_visible(False)
+
+        # Ajusta el diseño y muestra la página
+        plt.tight_layout(rect=[0, 0, 1, 0.96])
+        plt.show()
 
 
 def detect_outliers_zscore(df, threshold=3):
@@ -301,17 +325,19 @@ def detect_outliers_zscore(df, threshold=3):
 
     # Identificar los outliers
     outliers = (z_scores.abs() > threshold).sum(axis=0)
+    outliers_dict = {col: (z_scores[col].abs() > threshold) for col in num_cols}
 
     write_to_report(
         f'\nOutliers detectados usando Z-score (con umbral de {threshold}):')
     write_to_report(outliers)
-    return z_scores
+    return outliers_dict
 
 
 def detect_outliers_iqr(df):
     """Detecta outliers usando el Rango Intercuartilico (IQR)."""
     num_cols = df.select_dtypes(include=['float64', 'int64']).columns
     outliers = {}
+    outliers_dict = {}
 
     for col in num_cols:
         Q1 = df[col].quantile(0.25)
@@ -322,7 +348,7 @@ def detect_outliers_iqr(df):
 
         # Detectar los outliers
         outliers[col] = df[(df[col] < lower_bound) | (df[col] > upper_bound)]
-
+        outliers_dict[col] = (df[col] < lower_bound) | (df[col] > upper_bound)
     write_to_report('\nValores atipicos detectados usando IQR:')
     for col, outlier_data in outliers.items():
         if not outlier_data.empty:  # Verificar si hay valores atipicos en la columna
@@ -339,12 +365,76 @@ def detect_outliers_iqr(df):
 
             # Mostrar cada fila con las columnas calculadas
             for row in rows:
+                formatted_row = "   ".join([f"{val:>10.2f}" if isinstance(
+                    val, (float, int)) else str(val) for val in row])
                 # Mostrar cada fila con tabulaciones
-                write_to_report("   ".join([f"{val:>10}" for val in row]))
+                write_to_report(formatted_row)
 
             write_to_report("\n")
 
-    return outliers
+    return outliers_dict
+
+
+def select_outlier_strategy(df, col_name):
+    """
+    Selecciona la estrategia para manejar valores atípicos basándose en la distribución de la columna.
+
+    Parámetros:
+        df (DataFrame): DataFrame con los datos.
+        col_name (str): Nombre de la columna a analizar.
+
+    Retorna:
+        str: Estrategia seleccionada ('mean', 'median', 'mode').
+    """
+    skewness = df[col_name].skew()
+    unique_values = df[col_name].nunique()
+
+    if abs(skewness) < 0.5:  # Sesgo bajo, usar media
+        return 'mean'
+    elif unique_values < 10:  # Pocos valores únicos, usar moda
+        return 'mode'
+    else:  # En otros casos, usar mediana
+        return 'median'
+
+
+def correct_outliers(df, outliers_dict, method="iqr"):
+    """
+    Corrige valores atípicos en las columnas basándose en los índices proporcionados
+    y el método de detección (IQR o Z-score).
+
+    Parámetros:
+        df (DataFrame): DataFrame con los datos originales.
+        outliers_dict (dict): Diccionario con columnas y sus índices de valores atípicos.
+        method (str): Método usado para detectar valores atípicos ('iqr' o 'z-score').
+
+    Retorna:
+        DataFrame: DataFrame con los valores atípicos corregidos.
+    """
+    for col, outliers_mask in outliers_dict.items():
+        # Verificar si hay valores atípicos en la columna
+        if outliers_mask.any():
+            # Seleccionar estrategia para corregir valores atípicos
+            strategy = select_outlier_strategy(df, col)
+            if strategy == 'mean':
+                replacement_value = df[col].mean()
+            elif strategy == 'median':
+                replacement_value = df[col].median()
+            elif strategy == 'mode':
+                replacement_value = df[col].mode()[0]
+            else:
+                raise ValueError("Estrategia no reconocida. Use 'mean', 'median' o 'mode'.")
+            
+            # Convertir el valor de reemplazo a int si la columna es de tipo int
+            if df[col].dtype == 'int64':
+                replacement_value = int(replacement_value)  # Convertir a int
+
+            # Reemplazar valores atípicos
+            df.loc[outliers_mask, col] = replacement_value
+            
+            # Escribir reporte del proceso
+            write_to_report(
+                f'\nSe corrigieron valores atipicos en la columna "{col}" usando "{strategy}".')
+    return df
 
 
 def plot_bar_chart(df, column):

@@ -2,85 +2,140 @@ from data_connection import load_data
 import eda_functions as eda
 import report_functions as rpt
 
-# Reinicia el archivo de reporte al inicio del análisis
-rpt.reset_report()
 
-# URL directa del archivo CSV en GitHub
-url = "https://raw.githubusercontent.com/FierceSpectrum/Script_EDA/refs/heads/main/data/datos.csv"
-data = load_data(url)
+def process_step(step_number, title, process_function, *args, **kwargs):
+    """
+    Maneja la logica repetitiva de escribir el titulo del paso, ejecutar el proceso
+    y guardar el DataFrame actualizado.
+    """
+    rpt.write_to_report(f"\nPaso {step_number}: {title}")
+    process_function(*args, **kwargs)
+    # Asume que el primer argumento es el DataFrame
+    rpt.save_dataframe_to_csv(args[0])
+    # input(f"\nStep {step_number} complete, enter to continue.")
 
-# Verificación y exploración inicial del dataset
-if data is not None:
-    # Paso 1: Carga y Comprensión Inicial de los Datos
-    eda.load_dataset_preview(data)
 
-    # Paso 2: Limpieza y Preparación de los Datos
-    eda.check_missing_values(data)
-    # Tratamiento de valores nulos (puedes modificar esto si prefieres otra técnica)
-    # data.fillna(data.mean(), inplace=True)
-    eda.drop_duplicates(data)
-    eda.conver_data_type(data)
-    eda.rename_columns(data)
+def main():
+    # Reinicia el archivo de reporte al inicio del analisis
+    rpt.reset_report()
 
-    rpt.write_to_report("\nDatos despues de la limpieza:")
-    rpt.write_to_report(data.head())
+    # URL directa del archivo CSV en GitHub
+    url = "https://raw.githubusercontent.com/FierceSpectrum/Script_EDA/refs/heads/main/data/datos.csv"
+    data = load_data(url)
 
-    # Paso 3: Análisis Univariado
-    eda.describe_data(data)             # Estadísticas descriptivas
-    eda.plot_histograms(data)           # Histogramas de distribuciones
-    eda.plot_boxplots(data)             # Diagramas de caja (boxplots)
-    eda.plot_distributions_and_boxplots_paginated(
-        data)  # Distribuciones y boxplots paginados
+    # Verifica si hay datos
+    if data is None:
+        rpt.write_to_report("No se pudieron cargar los datos.")
+        return
 
-    # Paso 4: Análisis Bivariado
-    eda.plot_correlation_matrix(data)  # Matriz de correlación
-    eda.plot_scatter_matrix(data)      # Matriz de diagramas de dispersión
+    # Paso 1: Carga y Comprension Inicial de los Datos
+    process_step(1, "Carga y Comprension Inicial de los Datos",
+                    eda.load_dataset_preview, data)
 
-    # Boxplots agrupados por una categoría
-    numeric_cols = data.select_dtypes(include=['float64', 'int64']).columns
-    eda.plot_boxplot_by_category(data, 'cancelled', numeric_cols)
+    # Paso 2: Limpieza y Preparacion de los Datos
+    def cleaning_process(df):
+        eda.check_missing_values(df)
+        eda.drop_duplicates(df)
+        eda.conver_data_type(df)
+        eda.rename_columns(df)
+        rpt.write_to_report("\nDatos despues de la limpieza:")
+        rpt.write_to_report(df.head())
 
-    # Paso 5: Análisis de Distribuciones y Sesgos
-    skewness, kurtosis = eda.check_skewness_and_kurtosis(data)
-    data_transformed = eda.transform_skewed_variables(data, skewness)
+    process_step(2, "Limpieza y Preparacion de los Datos",
+                    cleaning_process, data)
 
-    # Visualización de distribuciones de datos transformados (verificar cambios tras la transformación)
-    eda.plot_histograms(data_transformed)
-    eda.plot_boxplots(data_transformed)
+    # Paso 3: Analisis Univariado
+    def univariate_analysis(df):
+        eda.describe_data(df)
+        # eda.plot_histograms(df)
+        # eda.plot_boxplots(df)
+        # eda.plot_distributions_and_boxplots_paginated(
+            # df)
 
-    # Paso 6: Detección de Valores Atípicos
-    eda.plot_boxplots_for_outliers(data)
-    eda.plot_scatter_for_outliers(data)
-    z_scores = eda.detect_outliers_zscore(data)
-    iqr_outliers = eda.detect_outliers_iqr(data)
+    process_step(3, "Analisis Univariado", univariate_analysis, data)
 
-    # Paso 7: Visualización de los Datos
-    # Gráficos de barras para todas las columnas categóricas
-    for column in ['cancelled', 'internationalplan', 'voicemailplan']:
-        eda.plot_bar_chart(data, column)
+    # Paso 4: Analisis Bivariado
+    def bivariate_analysis(df):
+        # eda.plot_correlation_matrix(df)
+        # eda.plot_scatter_matrix(df)
+        numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns
+        # eda.plot_boxplot_by_category(df, 'cancelled', numeric_cols)
 
-    # Gráfico de línea para una variable temporal o de progresión
-    eda.plot_line_chart(data, 'account_length', 'total_day_minutes')
+    process_step(4, "Analisis Bivariado", bivariate_analysis, data)
 
-    # Diagramas de dispersión para observar relaciones entre diferentes variables continuas
-    eda.plot_scatter_plot(data, 'total_day_minutes', 'total_day_charge')
-    eda.plot_scatter_plot(data, 'total_intl_minutes', 'total_intl_charge')
-    eda.plot_scatter_plot(data, 'total_night_minutes', 'total_night_charge')
+    # Paso 5: Analisis de Distribuciones y Sesgos
+    def distribution_analysis(df):
+        skewness, kurtosis = eda.check_skewness_and_kurtosis(df)
+        eda.transform_skewed_variables(df, skewness)
 
-    # Gráficos de densidad para observar distribuciones de variables continuas
-    eda.plot_density_chart(data, 'total_day_charge')
-    eda.plot_density_chart(data, 'total_intl_charge')
-    eda.plot_density_chart(data, 'total_night_minutes')
+        # Visualizacion de distribuciones de datos transformados (verificar cambios tras la transformacion)
+        eda.plot_histograms(df)
+        eda.plot_boxplots(df)
 
-    # Paso 8: Normalización de Datos
-    data_normalized = eda.normalize_data_min_max(data)
+    process_step(5, "Analisis de Distribuciones y Sesgos",
+                    distribution_analysis, data)
 
-    # Paso 9: Resúmenes y Conclusiones (el paso 8 de normalización lo puedes realizar después del EDA si decides aplicarlo)
-    resumen_data = rpt.generate_dataset_summary(data)
-    resumen = rpt.write_summary_report(resumen_data)
-    rpt.write_to_report(resumen)
+    # Paso 6: Deteccion de Valores Atipicos
+    def outlier_detection(df):
+        eda.plot_scatter_paginated(df)
+        outliers_zscore = eda.detect_outliers_zscore(df)
 
-    rpt.save_dataframe_to_csv(data_normalized)
+        # outliers = True
+        # while outliers:
+        #     outliers = False
+        #     outliers_iqr = eda.detect_outliers_iqr(df)
+        #     for col, outliers_mask in outliers_iqr.items():
+        #         if outliers_mask.any():  # Si la columna sigue teniendo valores atípicos
+        #             outliers = True  # Si se encuentra algún valor atípico, devolver True
+        #             break
+        #     eda.correct_outliers(df, outliers_iqr, method="iqr")
 
-else:
-    rpt.write_to_report("No se pudieron cargar los datos.")
+        outliers_iqr = eda.detect_outliers_iqr(df)
+        eda.correct_outliers(df, outliers_iqr, method="iqr")
+
+        eda.detect_outliers_zscore(df)
+        eda.detect_outliers_iqr(df)
+
+        eda.plot_boxplots(df)
+        eda.plot_scatter_paginated(df)
+
+    process_step(6, "Deteccion de Valores Atipicos", outlier_detection, data)
+
+    # Paso 7: Visualizacion de los Datos
+    def data_visualization(df):
+        # Graficos de barras para todas las columnas categoricas
+        for column in ['cancelled', 'international_plan', 'voicemail_plan']:
+            eda.plot_bar_chart(df, column)
+
+        # Grafico de linea para una variable temporal o de progresion
+        eda.plot_line_chart(df, 'account_length', 'total_day_minutes')
+
+        # Diagramas de dispersion para observar relaciones entre diferentes variables continuas
+        eda.plot_scatter_plot(df, 'total_day_minutes', 'total_day_charge')
+        eda.plot_scatter_plot(df, 'total_intl_minutes', 'total_intl_charge')
+        eda.plot_scatter_plot(df, 'total_night_minutes', 'total_night_charge')
+
+        # Graficos de densidad para observar distribuciones de variables continuas
+        eda.plot_density_chart(df, 'total_day_charge')
+        eda.plot_density_chart(df, 'total_intl_charge')
+        eda.plot_density_chart(df, 'total_night_minutes')
+
+    process_step(7, "Visualizacion de los Datos", data_visualization, data)
+
+    # Paso 8: Normalizacion de Datos
+    def data_normalization(df):
+        eda.normalize_data_min_max(df)
+        rpt.save_dataframe_to_csv(df)
+
+    process_step(8, "Normalizacion de Datos", data_normalization, data)
+
+    # Paso 9: Resumenes y Conclusiones
+    def summarize_and_conclude(df):
+        summary = rpt.generate_dataset_summary(df)
+        rpt.write_to_report(rpt.write_summary_report(summary))
+
+    process_step(9, "Resumenes y Conclusiones", summarize_and_conclude, data)
+
+
+if __name__ == "__main__":
+    main()
