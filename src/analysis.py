@@ -12,7 +12,7 @@ def process_step(step_number, title, process_function, *args, **kwargs):
     process_function(*args, **kwargs)
     # Asume que el primer argumento es el DataFrame
     rpt.save_dataframe_to_csv(args[0])
-    # input(f"\nStep {step_number} complete, enter to continue.")
+    input(f"\nStep {step_number} complete, enter to continue.")
 
 
 def main():
@@ -50,7 +50,7 @@ def main():
         # eda.plot_histograms(df)
         # eda.plot_boxplots(df)
         # eda.plot_distributions_and_boxplots_paginated(
-            # df)
+        # df)
 
     process_step(3, "Analisis Univariado", univariate_analysis, data)
 
