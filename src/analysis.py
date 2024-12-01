@@ -47,19 +47,19 @@ def main():
     # Paso 3: Analisis Univariado
     def univariate_analysis(df):
         eda.describe_data(df)
-        # eda.plot_histograms(df)
-        # eda.plot_boxplots(df)
-        # eda.plot_distributions_and_boxplots_paginated(
-        # df)
+        eda.plot_histograms(df)
+        eda.plot_boxplots(df)
+        eda.plot_distributions_and_boxplots_paginated(
+        df)
 
     process_step(3, "Analisis Univariado", univariate_analysis, data)
 
     # Paso 4: Analisis Bivariado
     def bivariate_analysis(df):
-        # eda.plot_correlation_matrix(df)
-        # eda.plot_scatter_matrix(df)
+        eda.plot_correlation_matrix(df)
+        eda.plot_scatter_matrix(df)
         numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns
-        # eda.plot_boxplot_by_category(df, 'cancelled', numeric_cols)
+        eda.plot_boxplot_by_category(df, 'cancelled', numeric_cols)
 
     process_step(4, "Analisis Bivariado", bivariate_analysis, data)
 

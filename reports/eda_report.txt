@@ -1,12 +1,12 @@
 
 Paso 1: Carga y Comprension Inicial de los Datos
 Primeras filas del dataset:
-  churn  accountlength internationalplan  ... totalintlcalls  totalintlcharge  numbercustomerservicecalls
-0    No            128                no  ...              3             2.70                           1
-1    No            107                no  ...              3             3.70                           1
-2    No            137                no  ...              5             3.29                           0
-3    No             84               yes  ...              7             1.78                           2
-4    No             75               yes  ...              3             2.73                           3
+  churn  accountlength internationalplan voicemailplan  ...  totalintlminutes  totalintlcalls  totalintlcharge  numbercustomerservicecalls
+0    No            128                no           yes  ...              10.0               3             2.70                           1
+1    No            107                no           yes  ...              13.7               3             3.70                           1
+2    No            137                no            no  ...              12.2               5             3.29                           0
+3    No             84               yes            no  ...               6.6               7             1.78                           2
+4    No             75               yes            no  ...              10.1               3             2.73                           3
 
 [5 rows x 18 columns]
 
@@ -66,12 +66,12 @@ Tipos de datos convertidos en las columnas categoricas.
 Nombres de columnas actualizados.
 
 Datos despues de la limpieza:
-   cancelled  account_length  international_plan  voicemail_plan  num_voicemail_messages  total_day_minutes  total_day_calls  total_day_charge  total_evening_minutes  total_evening_calls  total_evening_charge  total_night_minutes  total_night_calls  total_night_charge  total_intl_minutes  total_intl_calls  total_intl_charge  num_customer_service_calls
-0      False             128               False            True                      25              265.1              110             45.07                  197.4                   99                 16.78                244.7                 91               11.01                10.0                 3               2.70                           1
-1      False             107               False            True                      26              161.6              123             27.47                  195.5                  103                 16.62                254.4                103               11.45                13.7                 3               3.70                           1
-2      False             137               False           False                       0              243.4              114             41.38                  121.2                  110                 10.30                162.6                104                7.32                12.2                 5               3.29                           0
-3      False              84                True           False                       0              299.4               71             50.90                   61.9                   88                  5.26                196.9                 89                8.86                 6.6                 7               1.78                           2
-4      False              75                True           False                       0              166.7              113             28.34                  148.3                  122                 12.61                186.9                121                8.41                10.1                 3               2.73                           3
+  cancelled  account_length international_plan voicemail_plan  num_voicemail_messages  total_day_minutes  total_day_calls  total_day_charge  total_evening_minutes  total_evening_calls  total_evening_charge  total_night_minutes  total_night_calls  total_night_charge  total_intl_minutes  total_intl_calls  total_intl_charge  num_customer_service_calls
+0        no             128                 no             si                      25              265.1              110             45.07                  197.4                   99                 16.78                244.7                 91               11.01                10.0                 3               2.70                           1
+1        no             107                 no             si                      26              161.6              123             27.47                  195.5                  103                 16.62                254.4                103               11.45                13.7                 3               3.70                           1
+2        no             137                 no             no                       0              243.4              114             41.38                  121.2                  110                 10.30                162.6                104                7.32                12.2                 5               3.29                           0
+3        no              84                 si             no                       0              299.4               71             50.90                   61.9                   88                  5.26                196.9                 89                8.86                 6.6                 7               1.78                           2
+4        no              75                 si             no                       0              166.7              113             28.34                  148.3                  122                 12.61                186.9                121                8.41                10.1                 3               2.73                           3
 
 Paso 3: Analisis Univariado
 
@@ -608,7 +608,7 @@ Paso 9: Resumenes y Conclusiones
     - Tamano del Dataset: 5000 filas y 18 columnas.
     - Tipos de Variables:
       - float64: 15 columnas.
-      - bool: 3 columnas.
+      - object: 3 columnas.
     - Valores Nulos: No se encontraron valores nulos.
     - Duplicados: No se detectaron filas duplicadas.
 

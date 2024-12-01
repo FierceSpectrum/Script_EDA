@@ -71,10 +71,10 @@ def conver_data_type(df):
 
     # Convertir 'yes'/'no' en 'internationalplan' y 'voicemailplan' a booleanos
     df['internationalplan'] = df['internationalplan'].map(
-        {'yes': True, 'no': False})
+        {'yes': 'si', 'no': 'no'})
     df['churn'] = df['churn'].map(
-        {'Yes': True, 'No': False})
-    df['voicemailplan'] = df['voicemailplan'].map({'yes': True, 'no': False})
+        {'Yes': 'si', 'No': 'no'})
+    df['voicemailplan'] = df['voicemailplan'].map({'yes': 'si', 'no': 'no'})
     write_to_report(
         "\nTipos de datos convertidos en las columnas categoricas.")
 
