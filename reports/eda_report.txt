@@ -1,41 +1,6 @@
 
 Paso 1: Carga y Comprension Inicial de los Datos
-Primeras filas del dataset:
-  churn  accountlength internationalplan voicemailplan  ...  totalintlminutes  totalintlcalls  totalintlcharge  numbercustomerservicecalls
-0    No            128                no           yes  ...              10.0               3             2.70                           1
-1    No            107                no           yes  ...              13.7               3             3.70                           1
-2    No            137                no            no  ...              12.2               5             3.29                           0
-3    No             84               yes            no  ...               6.6               7             1.78                           2
-4    No             75               yes            no  ...              10.1               3             2.73                           3
-
-[5 rows x 18 columns]
-
-Tipos de datos por columna:
-churn                          object
-accountlength                   int64
-internationalplan              object
-voicemailplan                  object
-numbervmailmessages             int64
-totaldayminutes               float64
-totaldaycalls                   int64
-totaldaycharge                float64
-totaleveminutes               float64
-totalevecalls                   int64
-totalevecharge                float64
-totalnightminutes             float64
-totalnightcalls                 int64
-totalnightcharge              float64
-totalintlminutes              float64
-totalintlcalls                  int64
-totalintlcharge               float64
-numbercustomerservicecalls      int64
-dtype: object
-
-Dimensiones del dataset:
-Filas: 5000, Columnas: 18
-
-Informacion general del dataset:
-None
+No se pudieron cargar los datos.
 
 Paso 2: Limpieza y Preparacion de los Datos
 
@@ -590,8 +555,6 @@ Columna: total_intl_charge
 
 
 
-Paso 7: Visualizacion de los Datos
-
 Paso 8: Normalizacion de Datos
 
 Datos normalizados con Min-Max Scaling.
@@ -607,7 +570,8 @@ Paso 9: Resumenes y Conclusiones
     ----------------------------
     - Tamano del Dataset: 5000 filas y 18 columnas.
     - Tipos de Variables:
-      - float64: 15 columnas.
+      - float64: 11 columnas.
+      - int64: 4 columnas.
       - object: 3 columnas.
     - Valores Nulos: No se encontraron valores nulos.
     - Duplicados: No se detectaron filas duplicadas.
